@@ -1,0 +1,3 @@
+# cache
+CACHE_CAPTCHA_PREFIX = 'shipping:captcha:'
+CACHE_CAPTCHA_EXPIRATION = 120000

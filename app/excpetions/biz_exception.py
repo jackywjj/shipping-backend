@@ -1,0 +1,3 @@
+class BizError(ValueError):
+    pass
+
