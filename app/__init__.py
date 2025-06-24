@@ -24,7 +24,8 @@ async def lifespan(app: FastAPI):
 
 
 async def create_redis() -> Redis:
-    return await create_redis_pool("redis://:" + REDIS_PASSWORD + "@" + REDIS_HOST + "?encoding=utf-8",
+    return await create_redis_pool("redis://" + REDIS_HOST + "?encoding=utf-8",
+                                   #password=REDIS_PASSWORD,
                                    db=int(REDIS_DB))
 
 

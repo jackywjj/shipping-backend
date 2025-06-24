@@ -11,7 +11,7 @@ from app.components.user_token import UserToken
 from app.constants.app_constant import (CACHE_CAPTCHA_PREFIX,
                                         CACHE_CAPTCHA_EXPIRATION)
 from app.excpetions.biz_exception import BizError
-from app.handler.fatcory import ResponseFactory
+from app.utils.factory import ResponseFactory
 from app.schemas.auth_schema import LoginForm
 from app.services.user_service import UserService
 from app.utils.helper import render_captcha_value
@@ -20,7 +20,7 @@ from app.utils.response_json import response_success
 router = APIRouter(prefix="/api", tags=['认证模块'])
 
 
-@router.get("/captcha")
+@router.get("/captcha", summary='获取验证码')
 async def get_captcha(request: Request):
     """
     获取验证码
@@ -37,7 +37,7 @@ async def get_captcha(request: Request):
     return response_success(data)
 
 
-@router.post("/auth/login")
+@router.post("/auth/login", summary='登陆模块')
 async def login(request: Request, login_form: LoginForm):
     captcha_value = await request.app.state.redis.get(CACHE_CAPTCHA_PREFIX + login_form.captcha_code)
     if captcha_value is None or captcha_value.lower() != login_form.captcha_value.lower():

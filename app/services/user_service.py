@@ -1,7 +1,7 @@
 from sqlalchemy import or_
 
 from app.components.user_token import UserToken
-from app.handler.fatcory import ResponseFactory
+from app.utils.factory import ResponseFactory
 from app.models import Session
 from app.models.user import User
 from app.schemas.user_schema import UserForm, UpdateForm
@@ -18,7 +18,7 @@ class UserService(object):
                     raise Exception("用户名已存在")
                 # 注册的时候给密码加盐
                 pwd = UserToken.add_salt(user_form.user_password)
-                user = User(user_form.user_group, user_form.user_name, pwd, user_form.real_name)
+                user = User(user_form.user_name, pwd)
                 session.add(user)
                 session.commit()
         except Exception as e:

@@ -1,5 +1,6 @@
 from sqlalchemy import or_
 
+from app.utils.factory import ResponseFactory
 from app.models import Session
 from app.models.customer import Customer
 from app.schemas.customer_schema import CustomerForm
@@ -25,11 +26,30 @@ class CustomerService(object):
         return None
 
     @staticmethod
-    def get_customers():
+    def get_all_customers():
         try:
             with Session() as session:
-                customers = session.query(Customer).filter_by(deleted_at=None).all()
+                customers = session.query(Customer).filter_by(active=1).all()
                 return customers, None
+        except Exception as e:
+            logger.error(f"获取客户列表失败: {str(e)}")
+            return [], str(e)
+
+    @staticmethod
+    def get_customers(page_number, page_size):
+        try:
+            with Session() as session:
+                offset = (page_number - 1) * page_size
+                query = session.query(Customer).filter_by(active=1)
+                customers = query.offset(offset).limit(page_size).all()
+                total = query.count()
+                res = {
+                    'page_number': page_number,
+                    'page_size': page_size,
+                    'total': total,
+                    'data': ResponseFactory.model_to_list(customers),
+                }
+                return res, None
         except Exception as e:
             logger.error(f"获取客户列表失败: {str(e)}")
             return [], str(e)
